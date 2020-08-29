@@ -1,15 +1,22 @@
-﻿
-using System.Collections;
+﻿using System.Collections;
 
 public class Singleton<SingletonType> : MonoBehaviourEx
     where SingletonType : Singleton<SingletonType>
 {
     #region Singleton
 
+    private static Singleton<SingletonType> s_earlyInstance = null;
     public static SingletonType Instance { get; private set; }
 
     private void InitializeSingleton()
     {
+        if (s_earlyInstance)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        s_earlyInstance = this;
         DontDestroyOnLoad(gameObject);
 
         var init = Initialize();
@@ -26,7 +33,7 @@ public class Singleton<SingletonType> : MonoBehaviourEx
 
     #endregion
 
-    protected override void Awake()
+    protected sealed override void Awake()
     {
         base.Awake();
 
