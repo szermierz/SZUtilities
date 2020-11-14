@@ -23,6 +23,38 @@ public static partial class Routines
         }
     }
 
+    public class RectAnchorMinMaxTrack : TrackBase
+    {
+        public readonly RectTransform RectTransform;
+
+        public readonly Vector2 MinFrom;
+        public readonly Vector2 MinTo;
+        public readonly Vector2 MaxFrom;
+        public readonly Vector2 MaxTo;
+
+        public RectAnchorMinMaxTrack(RectTransform transform, float timeTotal, Func<float, float> curve, Vector2 minFrom, Vector2 minTo, Vector2 maxFrom, Vector2 maxTo)
+            : base(timeTotal, curve)
+        {
+            RectTransform = transform;
+
+            MinFrom = minFrom;
+            MinTo = minTo;
+            MaxFrom = maxFrom;
+            MaxTo = maxTo;
+        }
+
+        public RectAnchorMinMaxTrack(RectTransform transform, float timeTotal, Func<float, float> curve, Vector2 minTo, Vector2 maxTo)
+            : this(transform, timeTotal, curve, transform.anchorMin, minTo, transform.anchorMax, maxTo)
+        { }
+
+
+        public override void SetProgress(float progress)
+        {
+            RectTransform.anchorMin = Vector2.LerpUnclamped(MinFrom, MinTo, progress);
+            RectTransform.anchorMax = Vector2.LerpUnclamped(MaxFrom, MaxTo, progress);
+        }
+    }
+
     public class RectSizeTrack : Vector2FieldTrack
     {
         public readonly RectTransform RectTransform;
