@@ -94,4 +94,33 @@ public static partial class Routines
             new LocalScaleTrack(target, time, curve, startScale, endScale)
             );
     }
+
+    public class RoutineTask
+    {
+        public bool Done { get; private set; } = true;
+
+        public RoutineTask()
+            : this(null)
+        { }
+
+        public RoutineTask(IEnumerator routine)
+        {
+            Attach(routine);
+        }
+
+        public IEnumerator Attach(IEnumerator routine)
+        {
+            if (null == routine)
+                return null;
+
+            Done = false;
+
+            return Concat(routine, Action(MakeDone));
+        }
+
+        private void MakeDone()
+        {
+            Done = true;
+        }
+    }
 }
