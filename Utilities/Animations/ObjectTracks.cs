@@ -55,6 +55,23 @@ public static partial class Routines
         }
     }
 
+    public class RectAnchorCenterTrack : RectAnchorMinMaxTrack
+    {
+        protected static Vector2 GetCurrentAnchorSize(RectTransform transform) => transform.anchorMax - transform.anchorMin;
+        protected static Vector2 GetCurrentHalfAnchorSize(RectTransform transform) => GetCurrentAnchorSize(transform) / 2.0f;
+        protected static Vector2 GetCurrentAnchorCenter(RectTransform transform) => transform.anchorMin + GetCurrentHalfAnchorSize(transform);
+
+        public RectAnchorCenterTrack(RectTransform transform, float timeTotal, Func<float, float> curve, Vector2 from, Vector2 to)
+            : base(transform, timeTotal, curve, 
+                  from - GetCurrentHalfAnchorSize(transform), to - GetCurrentHalfAnchorSize(transform),
+                  from + GetCurrentHalfAnchorSize(transform), to + GetCurrentHalfAnchorSize(transform))
+        { }
+
+        public RectAnchorCenterTrack(RectTransform transform, float timeTotal, Func<float, float> curve, Vector2 to)
+            : this(transform, timeTotal, curve, GetCurrentAnchorCenter(transform), to)
+        { }
+    }
+
     public class RectSizeTrack : Vector2FieldTrack
     {
         public readonly RectTransform RectTransform;
