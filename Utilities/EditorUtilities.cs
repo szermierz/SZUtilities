@@ -7,6 +7,10 @@ namespace _EditorUtilities
 {
     public static class _EditorDirty
     {
+        public static void Mark(ScriptableObject scriptableObject)
+        {
+            EditorUtility.SetDirty(scriptableObject);
+        }
         public static void Mark(Component component)
         {
             if(!component)
