@@ -9,11 +9,15 @@ namespace DebugUtilities
     {
         #region Construction
 
-        private readonly UnityEngine.Object m_source;
+        private readonly string m_sourceName;
 
         public DebugEx(UnityEngine.Object source)
+            : this(source.GetType().Name)
+        { }
+
+        public DebugEx(string sourceName)
         {
-            m_source = source;
+            m_sourceName = sourceName;
         }
 
         #endregion
@@ -23,7 +27,7 @@ namespace DebugUtilities
         [DebuggerHidden]
         private string PrepareMessage(string message, UnityEngine.Object context)
         {
-            return FormatText($"[{m_source.GetType().Name}] <b>{GetCallerMethodName(3)}</b>: {message}");
+            return FormatText($"[{m_sourceName}] <b>{GetCallerMethodName(3)}</b>: {message}");
         }
 
         [DebuggerHidden]
@@ -91,8 +95,6 @@ namespace DebugUtilities
         #endregion
 
         #region Debug utilities
-
-        public string GetDebugName() => GetDebugName(m_source);
 
         public string GetDebugName(UnityEngine.Object target)
         {
