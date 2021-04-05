@@ -2,18 +2,14 @@
 using UnityEditor.UI;
 using UnityEngine;
 
-namespace AM.Utils.Editor
+[CanEditMultipleObjects, CustomEditor(typeof(NonDrawingGraphic), false)]
+public class NonDrawingGraphicEditor : GraphicEditor
 {
-	[CanEditMultipleObjects, CustomEditor(typeof(NonDrawingGraphic), false)]
-	public class NonDrawingGraphicEditor : GraphicEditor
+	public override void OnInspectorGUI()
 	{
-		public override void OnInspectorGUI()
-		{
-			base.serializedObject.Update();
-			EditorGUILayout.PropertyField(base.m_Script, new GUILayoutOption[0]);
-			// skipping AppearanceControlsGUI
-			base.RaycastControlsGUI();
-			base.serializedObject.ApplyModifiedProperties();
-		}
+		base.serializedObject.Update();
+		EditorGUILayout.PropertyField(base.m_Script, new GUILayoutOption[] {});
+		base.RaycastControlsGUI();
+		base.serializedObject.ApplyModifiedProperties();
 	}
 }
