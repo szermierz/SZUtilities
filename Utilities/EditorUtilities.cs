@@ -2,9 +2,28 @@
 
 #if UNITY_EDITOR
 using UnityEditor;
+#endif
 
-namespace _EditorUtilities
+namespace EditorUtilities
 {
+    public static class ApplicationStatus
+    {
+        public static bool IsQuitting { get; private set; }
+        
+        [RuntimeInitializeOnLoadMethod]
+        static void RegisterQuitting()
+        {
+            IsQuitting = false;
+            Application.quitting -= OnQuit;
+            Application.quitting += OnQuit;
+        }
+
+        private static void OnQuit()
+        {
+            IsQuitting = true;
+        }
+    }
+#if UNITY_EDITOR
     public static class _EditorDirty
     {
         public static void Mark(ScriptableObject scriptableObject)
@@ -32,6 +51,5 @@ namespace _EditorUtilities
                 EditorUtility.SetDirty(gameObject);
         }
     }
-}
-
 #endif
+}
