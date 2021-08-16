@@ -1,5 +1,7 @@
 ﻿using System.Collections;
+using UnityEngine;
 
+[DefaultExecutionOrder(-999)]
 public class Singleton<SingletonType> : MonoBehaviourEx
     where SingletonType : Singleton<SingletonType>
 {
