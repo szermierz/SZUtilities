@@ -7,8 +7,12 @@ public class Singleton<SingletonType> : MonoBehaviourEx
 {
     #region Singleton
 
+    protected virtual bool WaitForInitialize => true;
+    
     private static Singleton<SingletonType> s_earlyInstance = null;
     public static SingletonType Instance { get; private set; }
+    
+    public bool Initialized { get; private set; }
 
     private void InitializeSingleton()
     {
@@ -19,17 +23,26 @@ public class Singleton<SingletonType> : MonoBehaviourEx
         }
 
         s_earlyInstance = this;
+        
+        if(!WaitForInitialize)
+            Instance = this as SingletonType;
+        
         DontDestroyOnLoad(gameObject);
 
         var init = Initialize();
         if(null != init)
         {
-            init = Routines.Concat(init, Routines.Action(() => { Instance = this as SingletonType; }));
+            init = Routines.Concat(init, Routines.Action(() =>
+            {
+                Instance = this as SingletonType;
+                Initialized = true;
+            }));
             StartCoroutine(init);
         }
         else
         {
             Instance = this as SingletonType;
+            Initialized = true;
         }
     }
 
