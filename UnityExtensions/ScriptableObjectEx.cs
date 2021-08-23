@@ -1,8 +1,14 @@
 ﻿using DebugUtilities;
 using UnityEngine;
 
-public class ScriptableObjectEx : ScriptableObject
+public class ScriptableObjectEx : ScriptableObject, IValidable
 {
+    #region IValidable
+
+    public bool Valid => null != this;
+
+    #endregion
+    
     #region Construction
 
     public ScriptableObjectEx()
