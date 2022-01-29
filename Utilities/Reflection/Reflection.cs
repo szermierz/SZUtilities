@@ -82,6 +82,27 @@ namespace SZUtilities
 
             return Activator.CreateInstance(type);
         }
+
+        public static object CreateObject(Type type)
+        {
+            if (typeof(ScriptableObject).IsAssignableFrom(type))
+            {
+                return ScriptableObject.CreateInstance(type);
+            }
+            else
+            {
+                return Activator.CreateInstance(type);
+            }
+        }
+
+        public static ObjectType CreateObject<ObjectType>(Type type)
+            where ObjectType : class
+        {
+            if (!typeof(ObjectType).IsAssignableFrom(type))
+                throw new Exception();
+
+            return (ObjectType)CreateObject(type);
+        }
     }
 }
 

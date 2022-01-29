@@ -1,6 +1,5 @@
 ﻿
-
-namespace Utilities.VectorExtensions
+namespace SZUtilities.VectorExtensions
 {
     public static class VectorExtensions
     {

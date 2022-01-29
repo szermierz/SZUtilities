@@ -1,6 +1,6 @@
-﻿using Utilities.VectorExtensions;
+﻿using SZUtilities.VectorExtensions;
 
-namespace Utilities.QuaternionExtensions
+namespace SZUtilities.QuaternionExtensions
 {
     public static class QuaternionExtensions
     {

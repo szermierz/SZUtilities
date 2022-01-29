@@ -4,7 +4,7 @@
 using UnityEditor;
 #endif
 
-namespace EditorUtilities
+namespace SZUtilities._Editor
 {
     public static class ApplicationStatus
     {

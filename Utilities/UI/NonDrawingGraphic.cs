@@ -1,16 +1,19 @@
 ﻿using UnityEngine.UI;
 
-public class NonDrawingGraphic : Graphic
+namespace SZUtilities.UI
 {
-	public override void SetMaterialDirty()
-	{ }
-
-	public override void SetVerticesDirty()
-	{ }
-
-    protected override void OnPopulateMesh(VertexHelper vertexHelper)
+	public class NonDrawingGraphic : Graphic
 	{
-		vertexHelper.Clear();
-		return;
+		public override void SetMaterialDirty()
+		{ }
+
+		public override void SetVerticesDirty()
+		{ }
+
+		protected override void OnPopulateMesh(VertexHelper vertexHelper)
+		{
+			vertexHelper.Clear();
+			return;
+		}
 	}
 }
