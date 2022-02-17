@@ -160,5 +160,25 @@ namespace SZUtilities
                 Transform.localScale = value;
             }
         }
+        
+        public class CanvasGroupAlphaTrack : FloatFieldTrack
+        {
+            public readonly CanvasGroup CanvasGroup;
+
+            public CanvasGroupAlphaTrack(CanvasGroup canvasGroup, float timeTotal, Func<float, float> curve, float from, float to)
+                : base(timeTotal, curve, from, to)
+            {
+                CanvasGroup = canvasGroup;
+            }
+
+            public CanvasGroupAlphaTrack(CanvasGroup canvasGroup, float timeTotal, Func<float, float> curve, float to)
+                : this(canvasGroup, timeTotal, curve, canvasGroup.alpha, to)
+            { }
+
+            public override void SetFieldProgress(float value)
+            {
+                CanvasGroup.alpha = value;
+            }
+        }
     }
 }
