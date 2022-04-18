@@ -30,9 +30,9 @@ namespace SZUtilities.Math
             m_sum = m_cummulatedWeights[m_cummulatedWeights.Count - 1];
         }
 
-        public int PickRandomIndex(DeterministicRandom random, int seedOffset)
+        public int PickRandomIndex(RandomGenerator random)
         {
-            var r = random.RandomExclusive(0, m_sum, seedOffset);
+            var r = random.UniformRangeInt(0, m_sum);
             return m_cummulatedWeights.TakeWhile(_weightSum => _weightSum <= r).Count();
         }
     }
