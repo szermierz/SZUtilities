@@ -23,7 +23,7 @@ namespace SZUtilities._Editor
             IsQuitting = true;
         }
     }
-#if UNITY_EDITOR
+
     public static class _EditorDirty
     {
         public static void Mark(ScriptableObject scriptableObject)
@@ -51,5 +51,4 @@ namespace SZUtilities._Editor
                 EditorUtility.SetDirty(gameObject);
         }
     }
-#endif
 }
