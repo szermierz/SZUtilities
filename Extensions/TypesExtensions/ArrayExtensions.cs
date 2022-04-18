@@ -6,7 +6,8 @@ namespace SZUtilities.Extensions
     {
         public static List<T> SortedArraysDiff<T>(IList<T> lhs, IList<T> rhs, List<T> cacheResult = null)
         {
-            cacheResult ??= new List<T>();
+            if(null == cacheResult)
+                cacheResult = new List<T>();
 
             var i = 0;
             var j = 0;
