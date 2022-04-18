@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -69,18 +69,20 @@ namespace SZUtilities
                 .Where(pair => pair.Value != null);
         }
 
-        public static object CreatetObject<T>()
-            where T : class
-        {
-            return CreateObject(typeof(T));
-        }
-
         public static object CreateObject(Type type)
         {
-            if (type.IsSubclassOf(typeof(ScriptableObject)))
-                return ScriptableObject.CreateInstance(type);
+            return type.IsSubclassOf(typeof(ScriptableObject)) 
+                ? ScriptableObject.CreateInstance(type) 
+                : Activator.CreateInstance(type);
+        }
 
-            return Activator.CreateInstance(type);
+        public static ObjectType CreateObject<ObjectType>(Type type)
+            where ObjectType : class
+        {
+            if (!typeof(ObjectType).IsAssignableFrom(type))
+                throw new Exception();
+
+            return (ObjectType)CreateObject(type);
         }
     }
 }
