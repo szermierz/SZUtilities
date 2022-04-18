@@ -1,13 +1,16 @@
 using System;
 using UnityEngine;
 
-public class SerializeInterfaceAttribute : PropertyAttribute
+namespace SZUtilities
 {
-    public System.Type requiredType { get; private set; }
-    
-    public SerializeInterfaceAttribute(Type type)
+    public class SerializeInterfaceAttribute : PropertyAttribute
     {
-        requiredType = type;
+        public Type requiredType { get; private set; }
+
+        public SerializeInterfaceAttribute(Type type)
+        {
+            requiredType = type;
+        }
     }
 }
 

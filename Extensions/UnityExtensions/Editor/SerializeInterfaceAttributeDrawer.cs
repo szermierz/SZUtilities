@@ -1,24 +1,28 @@
 using UnityEngine;
 using UnityEditor;
 
-[CustomPropertyDrawer(typeof(SerializeInterfaceAttribute))]
-public class SerializeInterfaceAttributeDrawer : PropertyDrawer
+namespace SZUtilities._Editor
 {
-    public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
+    [CustomPropertyDrawer(typeof(SerializeInterfaceAttribute))]
+    public class SerializeInterfaceAttributeDrawer : PropertyDrawer
     {
-        if (property.propertyType == SerializedPropertyType.ObjectReference)
+        public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
-            var requiredAttribute = (SerializeInterfaceAttribute)attribute;
-            EditorGUI.BeginProperty(position, label, property);
-            property.objectReferenceValue = EditorGUI.ObjectField(position, label, property.objectReferenceValue, requiredAttribute.requiredType, true);
-            EditorGUI.EndProperty();
-        }
-        else
-        {
-            var previousColor = GUI.color;
-            GUI.color = Color.red;
-            EditorGUI.LabelField(position, label, new GUIContent("Property is not a reference type"));
-            GUI.color = previousColor;
+            if (property.propertyType == SerializedPropertyType.ObjectReference)
+            {
+                var requiredAttribute = (SerializeInterfaceAttribute) attribute;
+                EditorGUI.BeginProperty(position, label, property);
+                property.objectReferenceValue = EditorGUI.ObjectField(position, label, property.objectReferenceValue,
+                    requiredAttribute.requiredType, true);
+                EditorGUI.EndProperty();
+            }
+            else
+            {
+                var previousColor = GUI.color;
+                GUI.color = Color.red;
+                EditorGUI.LabelField(position, label, new GUIContent("Property is not a reference type"));
+                GUI.color = previousColor;
+            }
         }
     }
 }

@@ -1,5 +1,8 @@
 ﻿
-namespace SZUtilities.VectorExtensions
+using System;
+using System.Globalization;
+
+namespace SZUtilities.Extensions
 {
     public static class VectorExtensions
     {
@@ -36,6 +39,29 @@ namespace SZUtilities.VectorExtensions
                 val = 78321564 * val + 345334;
                 return val % 0xFFFF;
             }
+        }
+    }
+    
+    public static class VectorSerialization
+    {
+        public static UnityEngine.Vector2 Deserialize_Vector2(this string value)
+        {
+            var values = value.Trim('(', ')').Split('|');
+            if (values.Length != 2)
+                throw new ArgumentException($"Vector2 has invalid format {value}! Expected \"(x|y)\"");
+
+            if (!float.TryParse(values[0], NumberStyles.Any, CultureInfo.InvariantCulture, out float x))
+                throw new ArgumentException($"Couldn't parse x of {value}!");
+
+            if (!float.TryParse(values[1], NumberStyles.Any, CultureInfo.InvariantCulture, out float y))
+                throw new ArgumentException($"Couldn't parse y of {value}!");
+
+            return new UnityEngine.Vector2(x, y);
+        }
+
+        public static string Serialize(this UnityEngine.Vector2 value)
+        {
+            return $"({value.x}|{value.y})";
         }
     }
 }
