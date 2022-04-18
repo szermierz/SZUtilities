@@ -82,12 +82,11 @@ namespace SZUtilities
                 }
             }
         }
-
-
-    public static IEnumerator Move(Transform target, Vector3 endPos, Quaternion endRot, Vector3 endScale, float time, Func<float, float> curve)
-    {
-        return Move(target, target.position, endPos, target.rotation, endRot, target.localPosition, endScale, time, curve);
-    }
+        
+        public static IEnumerator Move(Transform target, Vector3 endPos, Quaternion endRot, Vector3 endScale, float time, Func<float, float> curve)
+        {
+            return Move(target, target.position, endPos, target.rotation, endRot, target.localPosition, endScale, time, curve);
+        }
 
         public static IEnumerator Move(Transform target, Vector3 startPos, Vector3 endPos, Quaternion startRot, Quaternion endRot, Vector3 startScale, Vector3 endScale, float time,
             Func<float, float> curve)
@@ -120,7 +119,7 @@ namespace SZUtilities
 
             Done = false;
 
-            return Concat(routine, Action(MakeDone));
+            return Routines.Concat(routine, Routines.Action(MakeDone));
         }
 
         private void MakeDone()

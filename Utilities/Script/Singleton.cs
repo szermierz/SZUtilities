@@ -1,59 +1,62 @@
 ﻿using System.Collections;
 using UnityEngine;
 
-[DefaultExecutionOrder(-999)]
-public class Singleton<SingletonType> : MonoBehaviourEx
-    where SingletonType : Singleton<SingletonType>
+namespace SZUtilities
 {
-    #region Singleton
-
-    protected virtual bool WaitForInitialize => true;
-    
-    private static Singleton<SingletonType> s_earlyInstance = null;
-    public static SingletonType Instance { get; private set; }
-    
-    public bool Initialized { get; private set; }
-
-    private void InitializeSingleton()
+    [DefaultExecutionOrder(-999)]
+    public class Singleton<SingletonType> : MonoBehaviourEx
+        where SingletonType : Singleton<SingletonType>
     {
-        if (s_earlyInstance)
-        {
-            Destroy(gameObject);
-            return;
-        }
+        #region Singleton
 
-        s_earlyInstance = this;
-        
-        if(!WaitForInitialize)
-            Instance = this as SingletonType;
-        
-        DontDestroyOnLoad(gameObject);
+        protected virtual bool WaitForInitialize => true;
 
-        var init = Initialize();
-        if(null != init)
+        private static Singleton<SingletonType> s_earlyInstance = null;
+        public static SingletonType Instance { get; private set; }
+
+        public bool Initialized { get; private set; }
+
+        private void InitializeSingleton()
         {
-            init = Routines.Concat(init, Routines.Action(() =>
+            if (s_earlyInstance)
+            {
+                Destroy(gameObject);
+                return;
+            }
+
+            s_earlyInstance = this;
+
+            if (!WaitForInitialize)
+                Instance = this as SingletonType;
+
+            DontDestroyOnLoad(gameObject);
+
+            var init = Initialize();
+            if (null != init)
+            {
+                init = Routines.Concat(init, Routines.Action(() =>
+                {
+                    Instance = this as SingletonType;
+                    Initialized = true;
+                }));
+                StartCoroutine(init);
+            }
+            else
             {
                 Instance = this as SingletonType;
                 Initialized = true;
-            }));
-            StartCoroutine(init);
+            }
         }
-        else
+
+        #endregion
+
+        protected sealed override void Awake()
         {
-            Instance = this as SingletonType;
-            Initialized = true;
+            base.Awake();
+
+            InitializeSingleton();
         }
+
+        protected virtual IEnumerator Initialize() => null;
     }
-
-    #endregion
-
-    protected sealed override void Awake()
-    {
-        base.Awake();
-
-        InitializeSingleton();
-    }
-
-    protected virtual IEnumerator Initialize() => null;
 }

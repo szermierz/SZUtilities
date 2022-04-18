@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Globalization;
 using UnityEngine;
-using Utilities.VectorExtensions;
 
 namespace SerializationExtensions
 {
@@ -36,7 +35,7 @@ namespace GizmoUtilities
     {
         public static void DrawArrow(Vector3 pos, Vector3 direction, Color color, float arrowHeadLength = 0.25f, float arrowHeadAngle = 20.0f)
         {
-            if (direction.IsZero())
+            if (direction.sqrMagnitude < 0.001f)
                 return;
 
             var prevColor = Gizmos.color;

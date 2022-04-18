@@ -40,7 +40,7 @@ namespace SZUtilities.Physics
             if (null == s_collisionSetups)
                 s_collisionSetups = new Dictionary<Type, ICollisionLayersSetup>();
 
-            var setupTypes = new HashSet<Type>(Reflection.FindDerivedTypes<ICollisionLayersSetup>());
+            var setupTypes = new HashSet<Type>(Reflection.FindDerived<ICollisionLayersSetup>());
             foreach (var type in setupTypes)
             {
                 if (type.IsAbstract || type.IsInterface)

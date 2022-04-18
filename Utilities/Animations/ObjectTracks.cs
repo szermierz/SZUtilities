@@ -25,64 +25,57 @@ namespace SZUtilities
             }
         }
 
-    public class RectAnchorMinMaxTrack : TrackBase
-    {
-        public readonly RectTransform RectTransform;
-
-        public readonly Vector2 MinFrom;
-        public readonly Vector2 MinTo;
-        public readonly Vector2 MaxFrom;
-        public readonly Vector2 MaxTo;
-
-        public RectAnchorMinMaxTrack(RectTransform transform, float timeTotal, Func<float, float> curve, Vector2 minFrom, Vector2 minTo, Vector2 maxFrom, Vector2 maxTo)
-            : base(timeTotal, curve)
+        public class RectAnchorMinMaxTrack : TrackBase
         {
-            RectTransform = transform;
+            public readonly RectTransform RectTransform;
 
-            MinFrom = minFrom;
-            MinTo = minTo;
-            MaxFrom = maxFrom;
-            MaxTo = maxTo;
+            public readonly Vector2 MinFrom;
+            public readonly Vector2 MinTo;
+            public readonly Vector2 MaxFrom;
+            public readonly Vector2 MaxTo;
+
+            public RectAnchorMinMaxTrack(RectTransform transform, float timeTotal, Func<float, float> curve, Vector2 minFrom, Vector2 minTo, Vector2 maxFrom, Vector2 maxTo)
+                : base(timeTotal, curve)
+            {
+                RectTransform = transform;
+
+                MinFrom = minFrom;
+                MinTo = minTo;
+                MaxFrom = maxFrom;
+                MaxTo = maxTo;
+            }
+
+            public RectAnchorMinMaxTrack(RectTransform transform, float timeTotal, Func<float, float> curve, Vector2 minTo, Vector2 maxTo)
+                : this(transform, timeTotal, curve, transform.anchorMin, minTo, transform.anchorMax, maxTo)
+            { }
+
+
+            public override void SetProgress(float progress)
+            {
+                RectTransform.anchorMin = Vector2.LerpUnclamped(MinFrom, MinTo, progress);
+                RectTransform.anchorMax = Vector2.LerpUnclamped(MaxFrom, MaxTo, progress);
+            }
         }
 
-        public RectAnchorMinMaxTrack(RectTransform transform, float timeTotal, Func<float, float> curve, Vector2 minTo, Vector2 maxTo)
-            : this(transform, timeTotal, curve, transform.anchorMin, minTo, transform.anchorMax, maxTo)
-        { }
-
-
-        public override void SetProgress(float progress)
+        public class RectAnchorCenterTrack : RectAnchorMinMaxTrack
         {
-            RectTransform.anchorMin = Vector2.LerpUnclamped(MinFrom, MinTo, progress);
-            RectTransform.anchorMax = Vector2.LerpUnclamped(MaxFrom, MaxTo, progress);
+            protected static Vector2 GetCurrentAnchorSize(RectTransform transform) => transform.anchorMax - transform.anchorMin;
+            protected static Vector2 GetCurrentHalfAnchorSize(RectTransform transform) => GetCurrentAnchorSize(transform) / 2.0f;
+            protected static Vector2 GetCurrentAnchorCenter(RectTransform transform) => transform.anchorMin + GetCurrentHalfAnchorSize(transform);
+
+            public RectAnchorCenterTrack(RectTransform transform, float timeTotal, Func<float, float> curve, Vector2 from, Vector2 to)
+                : base(transform, timeTotal, curve, 
+                      from - GetCurrentHalfAnchorSize(transform), to - GetCurrentHalfAnchorSize(transform),
+                      from + GetCurrentHalfAnchorSize(transform), to + GetCurrentHalfAnchorSize(transform))
+            { }
+
+            public RectAnchorCenterTrack(RectTransform transform, float timeTotal, Func<float, float> curve, Vector2 to)
+                : this(transform, timeTotal, curve, GetCurrentAnchorCenter(transform), to)
+            { }
         }
-    }
 
-    public class RectAnchorCenterTrack : RectAnchorMinMaxTrack
-    {
-        protected static Vector2 GetCurrentAnchorSize(RectTransform transform) => transform.anchorMax - transform.anchorMin;
-        protected static Vector2 GetCurrentHalfAnchorSize(RectTransform transform) => GetCurrentAnchorSize(transform) / 2.0f;
-        protected static Vector2 GetCurrentAnchorCenter(RectTransform transform) => transform.anchorMin + GetCurrentHalfAnchorSize(transform);
-
-        public RectAnchorCenterTrack(RectTransform transform, float timeTotal, Func<float, float> curve, Vector2 from, Vector2 to)
-            : base(transform, timeTotal, curve, 
-                  from - GetCurrentHalfAnchorSize(transform), to - GetCurrentHalfAnchorSize(transform),
-                  from + GetCurrentHalfAnchorSize(transform), to + GetCurrentHalfAnchorSize(transform))
-        { }
-
-        public RectAnchorCenterTrack(RectTransform transform, float timeTotal, Func<float, float> curve, Vector2 to)
-            : this(transform, timeTotal, curve, GetCurrentAnchorCenter(transform), to)
-        { }
-    }
-
-    public class RectSizeTrack : Vector2FieldTrack
-    {
-        public readonly RectTransform RectTransform;
-
-        public RectSizeTrack(RectTransform transform, float timeTotal, Func<float, float> curve, Vector2 from, Vector2 to)
-            : base(timeTotal, curve, from, to)
+        public class RectSizeTrack : Vector2FieldTrack
         {
-            RectTransform = transform;
-        }
             public readonly RectTransform RectTransform;
 
             public RectSizeTrack(RectTransform transform, float timeTotal, Func<float, float> curve, Vector2 from, Vector2 to)

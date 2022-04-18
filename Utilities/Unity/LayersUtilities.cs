@@ -28,7 +28,7 @@ namespace SZUtilities.Layers
             if (null == s_layerSetups)
                 s_layerSetups = new Dictionary<string, ILayerSetup>();
 
-            var layersSetupTypes = new HashSet<Type>(Reflection.FindDerivedTypes<ILayerSetup>());
+            var layersSetupTypes = new HashSet<Type>(Reflection.FindDerived<ILayerSetup>());
             foreach (var type in layersSetupTypes)
             {
                 if (type.IsAbstract || type.IsInterface)
