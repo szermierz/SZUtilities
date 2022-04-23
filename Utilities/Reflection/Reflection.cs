@@ -49,12 +49,12 @@ namespace SZUtilities
 
         public static List<Type> FindDerived<T>(Assembly assembly) => assembly
             .GetTypes()
-            .Where(_type => _type != typeof(T) && _type.IsSubclassOf(typeof(T)))
+            .Where(_type => _type != typeof(T) && typeof(T).IsAssignableFrom(_type))
             .ToList();
 
         public static List<Type> FindDerived<T>(Assembly[] assemblies) => assemblies
             .SelectMany(_assembly => _assembly.GetTypes())
-            .Where(_type => _type != typeof(T) && _type.IsSubclassOf(typeof(T)))
+            .Where(_type => _type != typeof(T) && typeof(T).IsAssignableFrom(_type))
             .ToList();
 
         public static IEnumerable<KeyValuePair<Type, AttribType>> FindAllTypesWithAttribute<AttribType>(Assembly[] assemblies = null)
