@@ -31,8 +31,11 @@ namespace SZUtilities
             if (!WaitForInitialize)
                 Instance = this as SingletonType;
 
-            if(MoveToDontDestroy)
+            if (MoveToDontDestroy)
+            {
+                transform.SetParent(null);
                 DontDestroyOnLoad(gameObject);
+            }
 
             var init = Initialize();
             if (null != init)
