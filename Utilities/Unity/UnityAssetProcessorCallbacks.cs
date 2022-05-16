@@ -22,7 +22,7 @@ namespace SZUtilities
         private static UnityEditor.AssetMoveResult OnWillMoveAsset(string sourcePath, string destinationPath)
         {
             onWillMoveAsset?.Invoke(sourcePath, destinationPath);
-            return UnityEditor.AssetMoveResult.DidMove;
+            return UnityEditor.AssetMoveResult.DidNotMove;
         }
         
         public static event Action<string[]> onWillSaveAssets;
