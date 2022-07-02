@@ -30,6 +30,14 @@ namespace SZUtilities
             : this(span.m_characters, span.m_start + start, length, span)
         { }
 
+        public StringSpan(char[] characters)
+            : this(characters, 0, characters.Length)
+        { }
+
+        public StringSpan(char[] characters, int start, int length)
+            : this(characters, start, length, null)
+        { }
+
         private StringSpan(char[] characters, int start, int length, StringSpan? from)
         {
             m_characters = characters;
