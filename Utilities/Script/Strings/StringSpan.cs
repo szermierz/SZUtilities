@@ -13,6 +13,8 @@ namespace SZUtilities
     {
         #region Fields
 
+        public static readonly StringSpan Empty = new StringSpan(string.Empty);
+
         private char[] m_characters;
         private int m_start;
         private int m_length;

@@ -48,13 +48,16 @@ namespace SZUtilities
                 m_current = new StringSpan(Span, m_start, endl - m_start);
                 return true;
             }
-            else if (!m_current.Valid)
+            else if (m_current.Valid)
+            {
+                m_current = new StringSpan(Span, m_start, Span.Length - m_start);
+                return true;
+            }
+            else
             {
                 m_current = new StringSpan(Span);
                 return true;
             }
-
-            return false;
         }
 
         public StringSpan Current => m_current;
