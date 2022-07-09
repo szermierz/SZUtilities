@@ -4,7 +4,9 @@ using System.Linq;
 
 namespace SZUtilities.Layers
 {
+#if UNITY_EDITOR
     [UnityEditor.InitializeOnLoad]
+#endif
     public static class LayersUtilities
     {
         public static DebugEx Debug = new DebugEx(nameof(LayersUtilities));

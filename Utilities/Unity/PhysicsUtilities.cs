@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine.WSA;
 
 namespace SZUtilities.Physics
 {
+#if UNITY_EDITOR
     [UnityEditor.InitializeOnLoad]
+#endif
     public static class PhysicsUtilities
     {
         #region Debug
