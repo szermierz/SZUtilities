@@ -6,7 +6,7 @@ namespace SZUtilities
 {
     public static class ListRenting
     {
-        private static Dictionary<Type, List<object>> s_listsPool = new Dictionary<Type, List<object>>();
+        private static Dictionary<Type, object> s_listsPool = new Dictionary<Type, object>();
 
         public static IDisposable Rent<ElementType>(out List<ElementType> list)
         {
@@ -15,15 +15,15 @@ namespace SZUtilities
                 var type = typeof(ElementType);
 
                 if (!s_listsPool.ContainsKey(type))
-                    s_listsPool.Add(type, new List<List<ElementType>>() as List<object>);
+                    s_listsPool.Add(type, new List<List<ElementType>>());
 
-                var lists = s_listsPool[type];
+                var lists = s_listsPool[type] as List<List<ElementType>>;
 
                 if (!lists.Any())
                     lists.Add(new List<ElementType>());
 
                 var lastIndex = lists.Count - 1;
-                list = lists[lastIndex] as List<ElementType>;
+                list = lists[lastIndex];
                 lists.RemoveAt(lastIndex);
 
                 return GetHandle(list);
@@ -37,16 +37,16 @@ namespace SZUtilities
                 var type = typeof(ElementType);
 
                 if (!s_listsPool.ContainsKey(type))
-                    s_listsPool.Add(type, new List<List<ElementType>>() as List<object>);
+                    s_listsPool.Add(type, new List<List<ElementType>>());
 
-                var lists = s_listsPool[type];
+                var lists = s_listsPool[type] as List<List<ElementType>>;
 
                 list.Clear();
                 lists.Add(list);
             }
         }
 
-        private static Dictionary<Type, List<object>> s_handles = new Dictionary<Type, List<object>>();
+        private static Dictionary<Type, object> s_handles = new Dictionary<Type, object>();
 
         private static ListHandle<ElementType> GetHandle<ElementType>(List<ElementType> list)
         {
@@ -54,7 +54,7 @@ namespace SZUtilities
             {
                 var type = typeof(ElementType);
                 if (!s_handles.ContainsKey(type))
-                    s_handles.Add(type, new List<ListHandle<ElementType>>() as List<object>);
+                    s_handles.Add(type, new List<ListHandle<ElementType>>());
 
                 var handles = s_handles[type] as List<ListHandle<ElementType>>;
                 if (!handles.Any())
@@ -75,7 +75,7 @@ namespace SZUtilities
             {
                 var type = typeof(ElementType);
                 if (!s_handles.ContainsKey(type))
-                    s_handles.Add(type, new List<ListHandle<ElementType>>() as List<object>);
+                    s_handles.Add(type, new List<ListHandle<ElementType>>());
 
                 var handles = s_handles[type] as List<ListHandle<ElementType>>;
                 handles.Add(handle);
