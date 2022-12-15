@@ -34,8 +34,12 @@ namespace SZUtilities
         [MethodImpl(MethodImplOptions.NoInlining)]
         public static string GetCallerMethodName(int skipFrames = 1)
         {
+#if UNITY_EDITOR
             var stackTrace = new StackTrace(new StackFrame(skipFrames));
             return stackTrace.GetFrame(0).GetMethod().Name;
+#else
+            return nameof(DebugEx);
+#endif
         }
 
         #endregion
@@ -104,9 +108,9 @@ namespace SZUtilities
             return string.Join("", bytes.Select(b => b.ToString("x2")).ToArray()).Substring(0, 6);
         }
 
-        #endregion
+#endregion
 
-        #region Unity debug utilities
+#region Unity debug utilities
 
         public string GetDebugName(UnityEngine.Object target)
         {
@@ -115,11 +119,11 @@ namespace SZUtilities
 
         private static string TransformPath(UnityEngine.Transform transform) => transform ? $"|{transform.name}{TransformPath(transform.parent)}" : string.Empty;
 
-        #endregion
+#endregion
 
 #else
 
-        #region Plain cs logging
+#region Plain cs logging
 
         private enum LogType
         {
@@ -200,7 +204,7 @@ namespace SZUtilities
             return (result % 14) + 1;
         }
 
-        #endregion
+#endregion
 
 #endif
     }
