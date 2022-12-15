@@ -1,12 +1,60 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace SZUtilities
 {
     public static partial class Routines
     {
+        /*
+        This is a routine wrapper which (in opposite to unity internal routines runner)
+        disposes enumerators in case of exception
+        */
+        public static IEnumerator DisposingRoutine(IEnumerator logic)
+        {
+            using var _ = ListRenting.Rent(out List<IEnumerator> stack);
+            try
+            {
+                stack.Add(logic);
+                while (stack.Any())
+                {
+                    var last = stack[^1];
+                    if(last.MoveNext())
+                    {
+                        var enumerator = last.Current switch
+                        {
+                            IEnumerable currentEnumerable => currentEnumerable.GetEnumerator(),
+                            IEnumerator currentEnumerator => currentEnumerator,
+                            _ => null,
+                        };
+
+                        if (null == enumerator)
+                            yield return last.Current;
+                        else
+                            stack.Add(enumerator);
+                    }
+                    else
+                    {
+                        if (last is IDisposable disposable)
+                            disposable.Dispose();
+
+                        stack.RemoveAt(stack.Count - 1);
+                    }
+                }
+            }
+            finally
+            {
+                for (var i = stack.Count - 1; i >= 0; --i)
+                {
+                    if (stack[i] is IDisposable disposable)
+                        disposable.Dispose();
+                }
+                stack.Clear();
+            }
+        }
+
         public static IEnumerator Concat(params IEnumerator[] enumerators)
         {
             foreach (var enumerator in enumerators)
