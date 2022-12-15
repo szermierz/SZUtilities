@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using UnityEngine;
 
@@ -12,6 +13,7 @@ namespace SZUtilities
         This is a routine wrapper which (in opposite to unity internal routines runner)
         disposes enumerators in case of exception
         */
+        [DebuggerHidden]
         public static IEnumerator DisposingRoutine(IEnumerator logic)
         {
             using var _ = ListRenting.Rent(out List<IEnumerator> stack);
