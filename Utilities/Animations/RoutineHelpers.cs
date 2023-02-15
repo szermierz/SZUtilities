@@ -16,6 +16,12 @@ namespace SZUtilities
         [DebuggerHidden]
         public static IEnumerator DisposingRoutine(IEnumerator logic)
         {
+            if(null == logic)
+            {
+                yield return null;
+                yield break;
+            }
+
             using var _ = ListRenting.Rent(out List<IEnumerator> stack);
             try
             {
