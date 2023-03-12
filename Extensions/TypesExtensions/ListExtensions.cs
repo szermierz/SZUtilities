@@ -20,5 +20,16 @@ namespace SZUtilities.Extensions
             list[index] = list[lastIndex];
             list.RemoveAt(lastIndex);
         }
+
+        public static void Shuffle<T>(this List<T> list)
+        {
+            int n = list.Count;
+            while (n > 1)
+            {
+                --n;
+                var k = UnityEngine.Random.Range(0, list.Count);
+                (list[n], list[k]) = (list[k], list[n]);
+            }
+        }
     }
 }
