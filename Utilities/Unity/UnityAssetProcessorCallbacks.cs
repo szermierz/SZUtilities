@@ -13,9 +13,10 @@ namespace SZUtilities
         }
 
         public static event Action<string, UnityEditor.RemoveAssetOptions> onWillDeleteAsset;
-        static void OnWillDeleteAsset(string assetName, UnityEditor.RemoveAssetOptions options)
+        static UnityEditor.AssetDeleteResult OnWillDeleteAsset(string assetName, UnityEditor.RemoveAssetOptions options)
         {
             onWillDeleteAsset?.Invoke(assetName, options);
+            return UnityEditor.AssetDeleteResult.DidNotDelete;
         }
         
         public static event Action<string, string> onWillMoveAsset;
