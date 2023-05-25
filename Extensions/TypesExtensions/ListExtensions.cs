@@ -21,6 +21,18 @@ namespace SZUtilities.Extensions
             list.RemoveAt(lastIndex);
         }
 
+        public static T PopUnorderedAt<T>(this List<T> list, int index)
+        {
+            var result = list[index];
+            list.RemoveUnorderedAt(index);
+            return result;
+        }
+
+        public static T PopUnordered<T>(this List<T> list)
+        {
+            return list.PopUnorderedAt(list.Count - 1);
+        }
+
         public static void Shuffle<T>(this List<T> list)
         {
             int n = list.Count;
