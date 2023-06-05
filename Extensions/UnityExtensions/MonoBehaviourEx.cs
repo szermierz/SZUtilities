@@ -103,10 +103,14 @@ namespace SZUtilities
                         parentIt = null;
                 }
             }
-            else if (typeof(Component).IsAssignableFrom(typeof(T)))
+            else 
             {
-                m_cache = GetComponentInParent<T>();
-                return m_cache;
+                var parent = skipSelf
+                    ? transform.parent
+                    : transform;
+
+                if(parent)
+                    m_cache = parent.GetComponentInParent<T>();
             }
 
             return m_cache;
