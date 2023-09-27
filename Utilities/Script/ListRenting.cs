@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace SZUtilities
@@ -8,6 +9,7 @@ namespace SZUtilities
     {
         private static Dictionary<Type, object> s_listsPool = new Dictionary<Type, object>();
 
+        [DebuggerStepThrough]
         public static IDisposable Rent<ElementType>(out List<ElementType> list)
         {
             lock(s_listsPool)
@@ -30,6 +32,7 @@ namespace SZUtilities
             }
         }
 
+        [DebuggerStepThrough]
         public static void Return<ElementType>(List<ElementType> list)
         {
             lock(s_listsPool)
@@ -48,6 +51,7 @@ namespace SZUtilities
 
         private static Dictionary<Type, object> s_handles = new Dictionary<Type, object>();
 
+        [DebuggerStepThrough]
         private static ListHandle<ElementType> GetHandle<ElementType>(List<ElementType> list)
         {
             lock(s_handles)
@@ -69,6 +73,7 @@ namespace SZUtilities
             }
         }
 
+        [DebuggerStepThrough]
         private static void ReturnHandle<ElementType>(ListHandle<ElementType> handle)
         {
             lock(s_handles)
@@ -86,6 +91,7 @@ namespace SZUtilities
         {
             private List<ElementType> m_list;
 
+            [DebuggerStepThrough]
             public void Assign(List<ElementType> list)
             {
                 if (null != m_list)
@@ -94,6 +100,7 @@ namespace SZUtilities
                 m_list = list;
             }
 
+            [DebuggerStepThrough]
             public void Dispose()
             {
                 if (null == m_list)
