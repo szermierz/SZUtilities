@@ -105,5 +105,16 @@ namespace SZUtilities.Extensions
                 (list[n], list[k]) = (list[k], list[n]);
             }
         }
+
+        public static int IndexOf<T>(this IReadOnlyList<T> list, T value)
+        {
+            for(var i = 0; i < list.Count; ++i)
+            {
+                if (EqualityComparer<T>.Default.Equals(list[i], value))
+                    return i;
+            }
+
+            return -1;
+        }
     }
 }
