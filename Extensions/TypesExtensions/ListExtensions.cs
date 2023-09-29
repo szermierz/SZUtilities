@@ -116,5 +116,11 @@ namespace SZUtilities.Extensions
 
             return -1;
         }
+
+        public static void Fill<T>(this IList<T> list, T value, int count)
+        {
+            for(var i = 0; i < count; ++i)
+                list.Add(value);
+        }
     }
 }
