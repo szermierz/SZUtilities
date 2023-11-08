@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -21,7 +22,7 @@ namespace SZUtilities
                 return 3.0f + v * (-6.0f + 4.0f * v);
         };
 
-        public static IEnumerator Animate(params TrackBase[] tracks)
+        public static IEnumerator Animate(IEnumerable<TrackBase> tracks)
         {
             for (float time = 0.0f; tracks.Any(_track => !_track.Completed); time += Time.deltaTime)
             {
@@ -30,6 +31,11 @@ namespace SZUtilities
 
                 yield return null;
             }
+        }
+
+        public static IEnumerator Animate(params TrackBase[] tracks)
+        {
+            return Animate((IEnumerable<TrackBase>)tracks);
         }
 
         public abstract class TrackBase
