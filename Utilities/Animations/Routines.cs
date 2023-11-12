@@ -51,7 +51,7 @@ namespace SZUtilities
                     return false;
 
                 var progress = Mathf.Min(1.0f, time / TimeTotal);
-                progress = Curve(progress);
+                progress = Mathf.Clamp01(Curve(progress));
 
                 SetProgress(progress);
 
