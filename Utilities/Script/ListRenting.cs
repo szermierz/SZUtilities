@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 
 namespace SZUtilities
 {
@@ -21,7 +20,7 @@ namespace SZUtilities
 
                 var lists = s_listsPool[type] as List<List<ElementType>>;
 
-                if (!lists.Any())
+                if (0 == lists.Count)
                     lists.Add(new List<ElementType>());
 
                 var lastIndex = lists.Count - 1;
@@ -61,7 +60,7 @@ namespace SZUtilities
                     s_handles.Add(type, new List<ListHandle<ElementType>>());
 
                 var handles = s_handles[type] as List<ListHandle<ElementType>>;
-                if (!handles.Any())
+                if (0 == handles.Count)
                     handles.Add(new ListHandle<ElementType>());
 
                 var lastIndex = handles.Count - 1;

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace SZUtilities.Layers
 {
@@ -62,7 +61,7 @@ namespace SZUtilities.Layers
 
         private static bool _EnsureLayers()
         {
-            if (!s_layerSetups.Any())
+            if (0 == s_layerSetups.Count)
                 return false;
             
             var tagManager = new UnityEditor.SerializedObject(UnityEditor.AssetDatabase.LoadAllAssetsAtPath("ProjectSettings/TagManager.asset")[0]);

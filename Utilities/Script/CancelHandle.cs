@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using SZUtilities.Extensions;
 
 namespace SZUtilities.Cancellables
@@ -19,7 +18,7 @@ namespace SZUtilities.Cancellables
         {
             lock(m_freeHandles)
             {
-                if (!m_freeHandles.Any())
+                if (0 == m_freeHandles.Count)
                     m_freeHandles.Add(new CancelHandle());
 
                 var handle = m_freeHandles[0];

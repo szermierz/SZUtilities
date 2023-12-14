@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using SZUtilities.Extensions;
 
 namespace SZUtilities
@@ -17,7 +16,7 @@ namespace SZUtilities
 
         public static DisposablesGroup Rent()
         {
-            if(s_freeGroups.Any())
+            if(s_freeGroups.Count > 0)
                 return s_freeGroups.PopUnordered();
 
             var group = new DisposablesGroup();

@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using UnityEngine;
 
 namespace SZUtilities
@@ -26,7 +25,7 @@ namespace SZUtilities
             try
             {
                 stack.Add(logic);
-                while (stack.Any())
+                while (stack.Count > 0)
                 {
                     var last = stack[^1];
                     if(last.MoveNext())

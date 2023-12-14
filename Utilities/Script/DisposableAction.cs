@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using SZUtilities.Extensions;
 
 namespace SZUtilities
@@ -11,7 +10,7 @@ namespace SZUtilities
 
         public static IDisposable Create(Action callback)
         {
-            if (!s_actionsPool.Any())
+            if (0 == s_actionsPool.Count)
                 s_actionsPool.Add(new DisposableAction());
 
             var action = s_actionsPool.PopUnordered();

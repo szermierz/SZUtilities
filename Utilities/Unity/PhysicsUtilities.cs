@@ -71,7 +71,7 @@ namespace SZUtilities.Physics
         
         private static bool _SetupCollisionLayers()
         {
-            if (!s_collisionSetups.Any())
+            if (0 == s_collisionSetups.Count)
                 return false;
             
             var anyChanged = false;
