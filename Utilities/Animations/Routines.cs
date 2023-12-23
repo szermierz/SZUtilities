@@ -11,7 +11,7 @@ namespace SZUtilities
         public static Func<float, float> Lerp => (v) => v;
         public static Func<float, float> Square => (v) => v * (2.0f - 1.0f * v);
         public static Func<float, float> RisingSquare => (v) => v * v;
-        public static Func<float, float> DoubleSquared => (v) => Square(Square(v));
+        public static Func<float, float> DoubleSquare => (v) => Square(Square(v));
         public static Func<float, float> DoubleRisingSquare => (v) => RisingSquare(RisingSquare(v));
 
         public static Func<float, float> BounceCurve => (v) =>
