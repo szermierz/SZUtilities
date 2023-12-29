@@ -1,10 +1,17 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace SZUtilities.Extensions
 {
     public static class ListExtensions
     {
+        public static void Resize<T>(this List<T> list, int size, T value)
+        {
+            while (list.Count > size)
+                list.RemoveAt(list.Count - 1);
+            while(list.Count < size)
+                list.Add(value);
+        }
+
         public static int Remove<T>(this List<T> list, IEnumerable<T> range)
         {
             var result = 0;
