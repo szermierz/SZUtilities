@@ -5,6 +5,13 @@ using SZUtilities.Extensions;
 
 namespace SZUtilities
 {
+    public interface IRentIdentifier
+    {
+        long RentID { get; }
+        void Rent(long id);
+        void Return();
+    }
+
     internal class RentingHandle
         : IDisposable
     {
@@ -52,11 +59,16 @@ namespace SZUtilities
     public static class RentingPool<RentingType>
         where RentingType : class, new()
     {
+        private static long s_currentRentID;
+
         private static Action<object> s_returnAction = (element) => 
         {
             var rentElement = (RentingType)element;
             lock (s_rentingPool)
                 s_rentingPool.Add(rentElement);
+
+            if (rentElement is IRentIdentifier rentIdentifier)
+                rentIdentifier.Return();
         };
 
         private static List<RentingType> s_rentingPool = new();
@@ -70,6 +82,9 @@ namespace SZUtilities
                     s_rentingPool.Add(new RentingType());
                 
                 result = s_rentingPool.PopUnordered();
+
+                if (result is IRentIdentifier rentIdentifier)
+                    rentIdentifier.Rent(++s_currentRentID);
             }
 
             return RentingHandle.GetHandle(s_returnAction, result);
