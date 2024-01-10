@@ -8,8 +8,7 @@ namespace SZUtilities
     public interface IRentIdentifier
     {
         long RentID { get; }
-        void Rent(long id);
-        void Return();
+        void UpdateRent(long id);
     }
 
     internal class RentingHandle
@@ -68,7 +67,7 @@ namespace SZUtilities
                 s_rentingPool.Add(rentElement);
 
             if (rentElement is IRentIdentifier rentIdentifier)
-                rentIdentifier.Return();
+                rentIdentifier.UpdateRent(default);
         };
 
         private static List<RentingType> s_rentingPool = new();
@@ -84,7 +83,12 @@ namespace SZUtilities
                 result = s_rentingPool.PopUnordered();
 
                 if (result is IRentIdentifier rentIdentifier)
-                    rentIdentifier.Rent(++s_currentRentID);
+                {
+                    if (++s_currentRentID >= long.MaxValue)
+                        s_currentRentID = 1;
+
+                    rentIdentifier.UpdateRent(s_currentRentID);
+                }
             }
 
             return RentingHandle.GetHandle(s_returnAction, result);
