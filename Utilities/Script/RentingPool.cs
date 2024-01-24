@@ -11,6 +11,33 @@ namespace SZUtilities
         void UpdateRent(long id);
     }
 
+    public struct RentedRef<TargetType>
+        where TargetType : IRentIdentifier
+    {
+        private TargetType m_target;
+        private long m_rentID;
+
+        public void Set(TargetType target)
+        {
+            m_target = target;
+            m_rentID = null != target
+                ? target.RentID
+                : default;
+        }
+
+        public TargetType Get()
+        {
+            if (null != m_target && m_target.RentID != m_rentID)
+            {
+                m_target = default;
+                m_rentID = default;
+            }
+
+            return m_target;
+        }
+    }
+
+
     internal class RentingHandle
         : IDisposable
     {
