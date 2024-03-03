@@ -17,6 +17,14 @@ namespace SZUtilities
         private TargetType m_target;
         private long m_rentID;
 
+        public RentedRef(TargetType target)
+        {
+            m_target = target;
+            m_rentID = null != target
+                ? target.RentID
+                : default;
+        }
+
         public void Set(TargetType target)
         {
             m_target = target;
@@ -34,6 +42,33 @@ namespace SZUtilities
             }
 
             return m_target;
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is RentedRef<TargetType> @ref &&
+                   EqualityComparer<TargetType>.Default.Equals(m_target, @ref.m_target) &&
+                   m_rentID == @ref.m_rentID;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(m_target, m_rentID);
+        }
+
+        public static bool operator ==(RentedRef<TargetType> lhs, RentedRef<TargetType> rhs)
+        {
+            return !(lhs != rhs);
+        }
+
+        public static bool operator !=(RentedRef<TargetType> lhs, RentedRef<TargetType> rhs)
+        {
+            if (lhs.m_rentID != rhs.m_rentID)
+                return true;
+            if (!ReferenceEquals(lhs.m_target, rhs.m_target))
+                return true;
+
+            return false;
         }
     }
 
