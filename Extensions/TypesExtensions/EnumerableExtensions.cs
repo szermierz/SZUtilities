@@ -8,12 +8,12 @@ namespace SZUtilities.Extensions
     {
         public static TSource Closest<TSource>(this IEnumerable<TSource> sequence, int pivot, Func<TSource, int> accessor)
         {
-            return sequence.Closest(pivot, _source => accessor(_source));
+            return sequence.Closest((float)pivot, _source => (float)accessor(_source));
         }
 
         public static int ClosestIndex<TSource>(this IEnumerable<TSource> sequence, int pivot, Func<TSource, int> accessor)
         {
-            return sequence.ClosestIndex(pivot, _source => accessor(_source));
+            return sequence.ClosestIndex((float)pivot, _source => (float)accessor(_source));
         }
 
         public static TSource Closest<TSource>(this IEnumerable<TSource> sequence, float pivot, Func<TSource, float> accessor)
