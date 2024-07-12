@@ -114,6 +114,26 @@ namespace SZUtilities
             }
         }
 
+        public class LocalRotationTrack : QuaternionFieldTrack
+        {
+            public readonly Transform Transform;
+
+            public LocalRotationTrack(Transform transform, float timeTotal, Func<float, float> curve, Quaternion from, Quaternion to)
+                : base(timeTotal, curve, from, to)
+            {
+                Transform = transform;
+            }
+
+            public LocalRotationTrack(Transform transform, float timeTotal, Func<float, float> curve, Quaternion to)
+                : this(transform, timeTotal, curve, transform.rotation, to)
+            { }
+
+            public override void SetFieldProgress(Quaternion value)
+            {
+                Transform.localRotation = value;
+            }
+        }
+
         public class RotationTrack : QuaternionFieldTrack
         {
             public readonly Transform Transform;
