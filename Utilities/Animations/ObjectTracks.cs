@@ -25,6 +25,41 @@ namespace SZUtilities
             }
         }
 
+        public class PositionWithOffsetTrack : PositionTrack
+        {
+            public readonly Vector3 Offset;
+            public readonly Func<float, float> OffsetInterpolator;
+
+            public PositionWithOffsetTrack(Transform transform, float timeTotal, Func<float, float> curve, Vector3 from, Vector3 to, Vector3 offset, Func<float, float> offsetInterpolator)
+                : base(transform, timeTotal, curve, from, to)
+            {
+                Offset = offset;
+                OffsetInterpolator = offsetInterpolator;
+            }
+
+            public PositionWithOffsetTrack(Transform transform, float timeTotal, Func<float, float> curve, Vector3 to, Vector3 offset, Func<float, float> offsetInterpolator)
+                : this(transform, timeTotal, curve, transform.position, to, offset, offsetInterpolator)
+            { }
+
+            protected override Vector3 PerformInterpolation(Vector3 from, Vector3 to, float x)
+            {
+                var baseResult = base.PerformInterpolation(from, to, x);
+                baseResult += OffsetInterpolator(x) * Offset;
+                return baseResult;
+            }
+        }
+
+        public class PositionWithParabolicOffsetTrack : PositionWithOffsetTrack
+        {
+            public PositionWithParabolicOffsetTrack(Transform transform, float timeTotal, Func<float, float> curve, Vector3 from, Vector3 to, Vector3 offset)
+                : base(transform, timeTotal, curve, from, to, offset, Parabolic)
+            { }
+
+            public PositionWithParabolicOffsetTrack(Transform transform, float timeTotal, Func<float, float> curve, Vector3 to, Vector3 offset)
+                : this(transform, timeTotal, curve, transform.position, to, offset)
+            { }
+        }
+
         public class RectAnchorMinMaxTrack : TrackBase
         {
             public readonly RectTransform RectTransform;

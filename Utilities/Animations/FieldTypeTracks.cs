@@ -21,7 +21,12 @@ namespace SZUtilities
                 ValueTo = to;
             }
 
-            public override void SetProgress(float progress) => SetFieldProgress(Interpolator(ValueFrom, ValueTo, progress));
+            protected virtual FieldType PerformInterpolation(FieldType from, FieldType to, float x)
+            {
+                return Interpolator(from, to, x);
+            }
+
+            public override void SetProgress(float progress) => SetFieldProgress(PerformInterpolation(ValueFrom, ValueTo, progress));
 
             public abstract void SetFieldProgress(FieldType value);
         }
