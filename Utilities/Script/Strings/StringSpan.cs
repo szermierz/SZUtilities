@@ -58,12 +58,12 @@ namespace SZUtilities
 
         #region Operators
 
-        public bool Valid => null != m_characters;
-        public int Length => m_length;
+        public readonly bool Valid => null != m_characters;
+        public readonly int Length => m_length;
 
-        public char this[int index] => m_characters[m_start + index];
+        public readonly char this[int index] => m_characters[m_start + index];
 
-        public override bool Equals(object obj)
+        public readonly override bool Equals(object obj)
         {
             if (obj is StringSpan span)
                 return Equals(span);
@@ -126,7 +126,37 @@ namespace SZUtilities
             }
         }
 
-        public bool Equals(StringSpan other)
+        public static bool operator ==(StringSpan lhs, StringSpan rhs)
+        {
+            return lhs.Equals(rhs);
+        }
+
+        public static bool operator !=(StringSpan lhs, StringSpan rhs)
+        {
+            return !lhs.Equals(rhs);
+        }
+
+        public static bool operator ==(string lhs, StringSpan rhs)
+        {
+            return rhs.Equals(lhs);
+        }
+
+        public static bool operator !=(string lhs, StringSpan rhs)
+        {
+            return !rhs.Equals(lhs);
+        }
+
+        public static bool operator ==(StringSpan lhs, string rhs)
+        {
+            return lhs.Equals(rhs);
+        }
+
+        public static bool operator !=(StringSpan lhs, string rhs)
+        {
+            return !lhs.Equals(rhs);
+        }
+
+        public readonly bool Equals(StringSpan other)
         {
             if (m_length != other.Length)
                 return false;
@@ -140,7 +170,7 @@ namespace SZUtilities
             return true;
         }
 
-        public bool Equals(string other)
+        public readonly bool Equals(string other)
         {
             if (m_length != other.Length)
                 return false;
@@ -154,7 +184,7 @@ namespace SZUtilities
             return true;
         }
 
-        public int CompareTo(StringSpan other)
+        public readonly int CompareTo(StringSpan other)
         {
             // ToDo: Make this comparision alphabetical and non allocating
             var debug = new DebugEx(nameof(StringSpan));
@@ -165,7 +195,7 @@ namespace SZUtilities
             return left.CompareTo(right);
         }
 
-        public int CompareTo(string other)
+        public readonly int CompareTo(string other)
         {
             // ToDo: Make this comparision alphabetical
             var debug = new DebugEx(nameof(StringSpan));
@@ -175,7 +205,7 @@ namespace SZUtilities
             return left.CompareTo(other);
         }
 
-        public int CompareTo(object obj)
+        public readonly int CompareTo(object obj)
         {
             if (obj == null)
                 return 1;
@@ -188,7 +218,7 @@ namespace SZUtilities
             return 1;
         }
 
-        public override string ToString()
+        public readonly override string ToString()
         {
             var builder = new StringBuilder(capacity: m_length);
             
@@ -198,16 +228,56 @@ namespace SZUtilities
             return builder.ToString();
         }
 
+        public readonly int ParseInt()
+        {
+            if (!TryParseInt(out var value))
+                throw new FormatException($"{ToString()} is not a number");
+
+            return value;
+        }
+
+        public readonly bool TryParseInt(out int result)
+        {
+            result = 0;
+
+            if(m_length <= 0)
+                return false;
+
+            var multiplier = 1;
+            var end = m_start + m_length;
+            for(var it = m_start; it < end; ++it)
+            {
+                var character = m_characters[it];
+                if('0' <= character && character <= '9')
+                {
+                    result *= 10;
+                    result += character - '0';
+                }
+                else if(character == '-' &&  it == m_start)
+                {
+                    multiplier = -1;
+                }
+                else
+                {
+                    result = 0;
+                    return false;
+                }
+            }
+
+            result *= multiplier;
+            return true;
+        }
+
         #endregion
 
         #region Methods
 
-        public StringSpan Substring(int start, int length)
+        public readonly StringSpan Substring(int start, int length)
         {
             return new StringSpan(this, start, length);
         }
 
-        public int Find(StringSpan text, int startIndex = 0)
+        public readonly int Find(StringSpan text, int startIndex = 0)
         {
             if (text.m_length <= 0)
                 return 0;
@@ -233,7 +303,7 @@ namespace SZUtilities
             return -1;
         }
 
-        public int Find(string str, int startIndex = 0)
+        public readonly int Find(string str, int startIndex = 0)
         {
             if (str.Length <= 0)
                 return 0;
@@ -259,7 +329,7 @@ namespace SZUtilities
             return -1;
         }
 
-        public int Find(char c, int startIndex = 0)
+        public readonly int Find(char c, int startIndex = 0)
         {
             for (var index = startIndex; index < m_length; ++index)
             {
@@ -270,7 +340,7 @@ namespace SZUtilities
             return -1;
         }
 
-        public void Split(char delimiter, ref List<StringSpan> result)
+        public readonly void Split(char delimiter, ref List<StringSpan> result)
         {
             result ??= new List<StringSpan>();
             result.Clear();
