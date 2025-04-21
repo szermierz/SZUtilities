@@ -11,7 +11,7 @@ namespace SZUtilities.Animations
 
         private class ParallerRoutineRun
         {
-            private List<UniTask> m_tasks;
+            private List<UniTask> m_tasks = new();
             private int m_toRun;
 
             public void Clear()
@@ -135,3 +135,5 @@ namespace SZUtilities.Animations
         #endregion
     }
 }
+
+#endif
