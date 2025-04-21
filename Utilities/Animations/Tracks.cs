@@ -27,8 +27,8 @@ namespace SZUtilities.Animations
     public class LocalPositionTrack 
         : Track
     {
-        private Vector3 m_from;
-        private Vector3 m_to;
+        protected Vector3 m_from;
+        protected Vector3 m_to;
 
         public void Setup(Transform target, Routines.Curve curve, Vector3 from, Vector3 to)
         {
@@ -47,8 +47,8 @@ namespace SZUtilities.Animations
     public class PositionTrack
         : Track
     {
-        private Vector3 m_from;
-        private Vector3 m_to;
+        protected Vector3 m_from;
+        protected Vector3 m_to;
 
         public void Setup(Transform target, Routines.Curve curve, Vector3 from, Vector3 to)
         {
@@ -67,8 +67,8 @@ namespace SZUtilities.Animations
     public class LocalRotationTrack
         : Track
     {
-        private Quaternion m_from;
-        private Quaternion m_to;
+        protected Quaternion m_from;
+        protected Quaternion m_to;
 
         public void Setup(Transform target, Routines.Curve curve, Quaternion from, Quaternion to)
         {
@@ -84,11 +84,30 @@ namespace SZUtilities.Animations
         }
     }
 
+    public class PositionWithParabolicOffsetTrack : PositionTrack
+    {
+        protected Vector3 m_parabolicOffset;
+
+        public void Setup(Transform target, Routines.Curve curve, Vector3 from, Vector3 to, Vector3 parabolicOffset)
+        {
+            Setup(target, curve, from, to);
+            m_parabolicOffset = parabolicOffset;
+        }
+
+        protected override void SetProgress(float progress)
+        {
+            base.SetProgress(progress);
+
+            var parabolicOffset = m_parabolicOffset * Routines.Parabolic(progress);
+            m_target.position += parabolicOffset;
+        }
+    }
+
     public class RotationTrack
         : Track
     {
-        private Quaternion m_from;
-        private Quaternion m_to;
+        protected Quaternion m_from;
+        protected Quaternion m_to;
 
         public void Setup(Transform target, Routines.Curve curve, Quaternion from, Quaternion to)
         {
@@ -107,8 +126,8 @@ namespace SZUtilities.Animations
     public class LocalScaleTrack
         : Track
     {
-        private Vector3 m_from;
-        private Vector3 m_to;
+        protected Vector3 m_from;
+        protected Vector3 m_to;
 
         public void Setup(Transform target, Routines.Curve curve, Vector3 from, Vector3 to)
         {

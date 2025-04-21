@@ -78,6 +78,18 @@ namespace SZUtilities.Animations
             return Add(handle, track);
         }
 
+        public readonly AnimationBuilder PositionWithParabolicOffset(Vector3 to, Routines.Curve curve, Vector3 parabolicOffset)
+        {
+            return PositionWithParabolicOffset(m_target.position, to, curve, parabolicOffset);
+        }
+
+        public readonly AnimationBuilder PositionWithParabolicOffset(Vector3 from, Vector3 to, Routines.Curve curve, Vector3 parabolicOffset)
+        {
+            var handle = RentingPool<PositionWithParabolicOffsetTrack>.Rent(out var track);
+            track.Setup(m_target, curve, from, to, parabolicOffset);
+            return Add(handle, track);
+        }
+
         public readonly AnimationBuilder LocalRotation(Quaternion to, Routines.Curve curve)
         {
             return LocalRotation(m_target.localRotation, to, curve);
