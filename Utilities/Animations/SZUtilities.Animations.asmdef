@@ -1,0 +1,23 @@
+{
+    "name": "SZUtilities.Animations",
+    "rootNamespace": "",
+    "references": [
+        "GUID:dca7995a328d1c0469c2aec5350327e4",
+        "GUID:f51ebe6a0ceec4240a699833d6309b23"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [
+        {
+            "name": "com.cysharp.unitask",
+            "expression": "2.5.10",
+            "define": "SZUTILITIES_USE_UNITASK"
+        }
+    ],
+    "noEngineReferences": false
+}
