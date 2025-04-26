@@ -1,4 +1,4 @@
-﻿#if SZUTILITIES_USE_UNITASK
+﻿#if SZUTILITIES_USE_UNITASK && !SZUTILITIES_LEGACY_ROUTINES
 
 using UnityEngine;
 using Cysharp.Threading.Tasks;

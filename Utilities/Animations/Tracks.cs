@@ -1,10 +1,13 @@
-#if SZUTILITIES_USE_UNITASK
+#if SZUTILITIES_USE_UNITASK && !SZUTILITIES_LEGACY_ROUTINES
 
+using System;
+using System.Threading;
 using UnityEngine;
 
 namespace SZUtilities.Animations
 {
     public abstract class Track
+        : IDisposable
     {
         protected Transform m_target;
         protected Routines.Curve m_curve;
@@ -15,13 +18,19 @@ namespace SZUtilities.Animations
             m_curve = curve;
         }
 
-        public virtual void Update(float progress)
+        public virtual void Dispose()
         {
-            progress = m_curve(progress);
-            SetProgress(progress);
+            m_target = null;
+            m_curve = null;
         }
 
-        protected abstract void SetProgress(float progress);
+        public virtual void Update(float progress, CancellationToken cancellationToken, ReuseableCancellationToken reuseableCancellationToken)
+        {
+            progress = m_curve(progress);
+            SetProgress(progress, cancellationToken, reuseableCancellationToken);
+        }
+
+        protected abstract void SetProgress(float progress, CancellationToken cancellationToken, ReuseableCancellationToken reuseableCancellationToken);
     }
 
     public class LocalPositionTrack 
@@ -37,7 +46,7 @@ namespace SZUtilities.Animations
             m_to = to;
         }
 
-        protected override void SetProgress(float progress)
+        protected override void SetProgress(float progress, CancellationToken cancellationToken, ReuseableCancellationToken reuseableCancellationToken)
         {
             var pos = Vector3.Lerp(m_from, m_to, progress);
             m_target.localPosition = pos;
@@ -57,7 +66,7 @@ namespace SZUtilities.Animations
             m_to = to;
         }
 
-        protected override void SetProgress(float progress)
+        protected override void SetProgress(float progress, CancellationToken cancellationToken, ReuseableCancellationToken reuseableCancellationToken)
         {
             var pos = Vector3.Lerp(m_from, m_to, progress);
             m_target.position = pos;
@@ -77,7 +86,7 @@ namespace SZUtilities.Animations
             m_to = to;
         }
 
-        protected override void SetProgress(float progress)
+        protected override void SetProgress(float progress, CancellationToken cancellationToken, ReuseableCancellationToken reuseableCancellationToken)
         {
             var rot = Quaternion.Lerp(m_from, m_to, progress);
             m_target.localRotation = rot;
@@ -94,9 +103,9 @@ namespace SZUtilities.Animations
             m_parabolicOffset = parabolicOffset;
         }
 
-        protected override void SetProgress(float progress)
+        protected override void SetProgress(float progress, CancellationToken cancellationToken, ReuseableCancellationToken reuseableCancellationToken)
         {
-            base.SetProgress(progress);
+            base.SetProgress(progress, cancellationToken, reuseableCancellationToken);
 
             var parabolicOffset = m_parabolicOffset * Routines.Parabolic(progress);
             m_target.position += parabolicOffset;
@@ -116,7 +125,7 @@ namespace SZUtilities.Animations
             m_to = to;
         }
 
-        protected override void SetProgress(float progress)
+        protected override void SetProgress(float progress, CancellationToken cancellationToken, ReuseableCancellationToken reuseableCancellationToken)
         {
             var rot = Quaternion.Lerp(m_from, m_to, progress);
             m_target.rotation = rot;
@@ -136,7 +145,7 @@ namespace SZUtilities.Animations
             m_to = to;
         }
 
-        protected override void SetProgress(float progress)
+        protected override void SetProgress(float progress, CancellationToken cancellationToken, ReuseableCancellationToken reuseableCancellationToken)
         {
             var scale = Vector3.Lerp(m_from, m_to, progress);
             m_target.localScale = scale;

@@ -1,7 +1,9 @@
-#if SZUTILITIES_USE_UNITASK
+#if SZUTILITIES_USE_UNITASK && !SZUTILITIES_LEGACY_ROUTINES
 
 using Cysharp.Threading.Tasks;
+using System;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace SZUtilities.Animations
 {
@@ -39,6 +41,27 @@ namespace SZUtilities.Animations
                 while (m_toRun >= 0)
                     await UniTask.Yield();
             }
+        }
+
+        private class ParallelContext2
+        {
+            public BoundFunctor<StructContainer<UniTask>> U1;
+            public BoundFunctor<StructContainer<UniTask>> U2;
+        }
+
+        public static DeferredRoutine DeferredParallel(
+            DeferredRoutine u1,
+            DeferredRoutine u2)
+        {
+            var (functor, context) = DeferredRoutine.Create(DeferredParallel);
+            context.U1 = u1;
+            context.U2 = u2;
+            return functor;
+        }
+
+        private static DeferredRoutine DeferredParallel(AnimationBuilder builder, CancellationToken cancellationToken, ReuseableCancellationToken reuseableCancellationToken)
+        {
+            DeferredRoutine.Create()
         }
 
         public static async UniTask Parallel(UniTask u1, UniTask u2)

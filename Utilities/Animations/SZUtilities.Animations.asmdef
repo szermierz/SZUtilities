@@ -17,6 +17,11 @@
             "name": "com.cysharp.unitask",
             "expression": "2.5.10",
             "define": "SZUTILITIES_USE_UNITASK"
+        },
+        {
+            "name": "Unity",
+            "expression": "",
+            "define": "SZUTILITIES_LEGACY_ROUTINES"
         }
     ],
     "noEngineReferences": false

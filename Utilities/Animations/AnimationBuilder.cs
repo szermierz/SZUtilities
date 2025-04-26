@@ -1,26 +1,43 @@
-#if SZUTILITIES_USE_UNITASK
+#if SZUTILITIES_USE_UNITASK && !SZUTILITIES_LEGACY_ROUTINES
 
 using System;
 using System.Collections.Generic;
 using UnityEngine;
 using Cysharp.Threading.Tasks;
+using System.Threading;
 
 namespace SZUtilities.Animations
 {
     public struct AnimationBuilder
     {
+        private static bool s_buildingInProgress = false;
+        private bool m_needsToReleaseBuilding;
+
         private readonly Transform m_target;
         private readonly float m_totalTime;
 
         private DisposablesGroup m_tracksGroup;
         private List<Track> m_tracks;
 
-        internal AnimationBuilder(Transform target, float totalTime)
+        internal AnimationBuilder(Transform target, float totalTime, DisposablesGroup disposables = null, List<Track> tracks = null)
         {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            if (s_buildingInProgress)
+                throw new Exception($"Memory leaks prevention: Did not finished previous building and started another one. Call {nameof(AwaitAnimation)} on previous builder");
+#endif
+
+            s_buildingInProgress = true;
+            m_needsToReleaseBuilding = true;
+
             m_target = target;
             m_totalTime = totalTime;
-            m_tracksGroup = DisposablesGroup.Rent();
-            m_tracksGroup.Add(ListRenting.Rent(out m_tracks));
+
+            m_tracksGroup = disposables ?? DisposablesGroup.Rent();
+
+            if (null != tracks)
+                m_tracks = tracks;
+            else
+                m_tracksGroup.Add(ListRenting.Rent(out m_tracks));
         }
 
         private readonly AnimationBuilder Add(IDisposable handle, Track track)
@@ -30,21 +47,46 @@ namespace SZUtilities.Animations
             return this;
         }
 
-        public async UniTask AwaitAnimation()
+        public UniTask AwaitAnimation()
         {
+            return AwaitAnimation(default, default);
+        }
+
+        public UniTask AwaitAnimation(ReuseableCancellationToken cancellationToken)
+        {
+            return AwaitAnimation(default, cancellationToken);
+        }
+
+        public UniTask AwaitAnimation(CancellationToken cancellationToken)
+        {
+            return AwaitAnimation(cancellationToken, default);
+        }
+
+        public async UniTask AwaitAnimation(CancellationToken cancellationToken, ReuseableCancellationToken reuseableCancellationToken)
+        {
+            if(m_needsToReleaseBuilding)
+            {
+                s_buildingInProgress = false;
+                m_needsToReleaseBuilding = false;
+            }
+
             try
             {
-                for(var time = 0.0f; time < m_totalTime; time += Time.deltaTime)
+                for (var time = 0.0f; time < m_totalTime; time += Time.deltaTime)
                 {
                     var progress = Mathf.Clamp01(time / m_totalTime);
                     foreach(var track in m_tracks)
-                        track.Update(progress);
+                        track.Update(progress, cancellationToken, reuseableCancellationToken);
 
                     await UniTask.Yield();
+
+                    if (cancellationToken.IsCancellationRequested 
+                        || reuseableCancellationToken.IsCancellationRequested)
+                        return;
                 }
 
                 foreach (var track in m_tracks)
-                    track.Update(1.0f);
+                    track.Update(1.0f, cancellationToken, reuseableCancellationToken);
             }
             finally
             {
@@ -52,6 +94,37 @@ namespace SZUtilities.Animations
                 m_tracksGroup = null;
                 m_tracks = null;
             }
+        }
+
+        private static UniTask StaticAwaitAnimation(AnimationBuilder builder, CancellationToken cancellationToken, ReuseableCancellationToken reuseableCancellationToken)
+        {
+            return builder.AwaitAnimation(cancellationToken, reuseableCancellationToken);
+        }
+
+        public DeferredRoutine DeferAnimation()
+        {
+            return DeferAnimation(default, default);
+        }
+
+        public DeferredRoutine DeferAnimation(CancellationToken cancellationToken)
+        {
+            return DeferAnimation(cancellationToken, default);
+        }
+
+        public DeferredRoutine DeferAnimation(ReuseableCancellationToken reuseableCancellationToken)
+        {
+            return DeferAnimation(default, reuseableCancellationToken);
+        }
+
+        public DeferredRoutine DeferAnimation(CancellationToken cancellationToken, ReuseableCancellationToken reuseableCancellationToken)
+        {
+            if (m_needsToReleaseBuilding)
+            {
+                s_buildingInProgress = false;
+                m_needsToReleaseBuilding = false;
+            }
+
+            return DeferredRoutine.Create(this, StaticAwaitAnimation, cancellationToken, reuseableCancellationToken);
         }
 
         public readonly AnimationBuilder LocalPosition(Vector3 to, Routines.Curve curve)
