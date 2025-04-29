@@ -9,6 +9,7 @@ using System.Threading;
 namespace SZUtilities.Animations
 {
     public struct AnimationBuilder
+        : IDisposable
     {
         private static bool s_buildingInProgress = false;
         private bool m_needsToReleaseBuilding;
@@ -90,33 +91,38 @@ namespace SZUtilities.Animations
             }
             finally
             {
-                m_tracksGroup.Dispose();
-                m_tracksGroup = null;
-                m_tracks = null;
+                Dispose();
             }
         }
 
-        private static UniTask StaticAwaitAnimation(AnimationBuilder builder, CancellationToken cancellationToken, ReuseableCancellationToken reuseableCancellationToken)
+        public void Dispose()
         {
-            return builder.AwaitAnimation(cancellationToken, reuseableCancellationToken);
+            if(m_needsToReleaseBuilding)
+                s_buildingInProgress = false;
+            m_needsToReleaseBuilding = false;
+            m_tracksGroup?.Dispose();
+            m_tracksGroup = null;
+            m_tracks = null;
         }
 
-        public DeferredRoutine DeferAnimation()
+        public DeferredUniTask DeferAnimation()
         {
             return DeferAnimation(default, default);
         }
 
-        public DeferredRoutine DeferAnimation(CancellationToken cancellationToken)
+        public DeferredUniTask DeferAnimation(CancellationToken cancellationToken)
         {
             return DeferAnimation(cancellationToken, default);
         }
 
-        public DeferredRoutine DeferAnimation(ReuseableCancellationToken reuseableCancellationToken)
+        public DeferredUniTask DeferAnimation(ReuseableCancellationToken reuseableCancellationToken)
         {
             return DeferAnimation(default, reuseableCancellationToken);
         }
 
-        public DeferredRoutine DeferAnimation(CancellationToken cancellationToken, ReuseableCancellationToken reuseableCancellationToken)
+        private static readonly Func<AnimationBuilder, CancellationToken, ReuseableCancellationToken, UniTask> s_staticAwaitAnimation 
+            = (builder, cancelToken, reuseToken) => builder.AwaitAnimation(cancelToken, reuseToken);
+        public DeferredUniTask DeferAnimation(CancellationToken cancellationToken, ReuseableCancellationToken reuseableCancellationToken)
         {
             if (m_needsToReleaseBuilding)
             {
@@ -124,7 +130,7 @@ namespace SZUtilities.Animations
                 m_needsToReleaseBuilding = false;
             }
 
-            return DeferredRoutine.Create(this, StaticAwaitAnimation, cancellationToken, reuseableCancellationToken);
+            return DeferredUniTask.Create(s_staticAwaitAnimation, this, cancellationToken, reuseableCancellationToken);
         }
 
         public readonly AnimationBuilder LocalPosition(Vector3 to, Routines.Curve curve)

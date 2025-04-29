@@ -1,9 +1,7 @@
 #if SZUTILITIES_USE_UNITASK && !SZUTILITIES_LEGACY_ROUTINES
 
 using Cysharp.Threading.Tasks;
-using System;
 using System.Collections.Generic;
-using System.Threading;
 
 namespace SZUtilities.Animations
 {
@@ -13,7 +11,7 @@ namespace SZUtilities.Animations
 
         private class ParallerRoutineRun
         {
-            private List<UniTask> m_tasks = new();
+            private readonly List<UniTask> m_tasks = new();
             private int m_toRun;
 
             public void Clear()
@@ -43,25 +41,14 @@ namespace SZUtilities.Animations
             }
         }
 
-        private class ParallelContext2
+        public static async UniTask Parallel(IReadOnlyList<UniTask> uniTasks)
         {
-            public BoundFunctor<StructContainer<UniTask>> U1;
-            public BoundFunctor<StructContainer<UniTask>> U2;
-        }
-
-        public static DeferredRoutine DeferredParallel(
-            DeferredRoutine u1,
-            DeferredRoutine u2)
-        {
-            var (functor, context) = DeferredRoutine.Create(DeferredParallel);
-            context.U1 = u1;
-            context.U2 = u2;
-            return functor;
-        }
-
-        private static DeferredRoutine DeferredParallel(AnimationBuilder builder, CancellationToken cancellationToken, ReuseableCancellationToken reuseableCancellationToken)
-        {
-            DeferredRoutine.Create()
+            using var handle = RentingPool<ParallerRoutineRun>.Rent(out var run);
+            run.Clear();
+            foreach (var task in uniTasks)
+                run.Add(task);
+            await run.Await();
+            run.Clear();
         }
 
         public static async UniTask Parallel(UniTask u1, UniTask u2)

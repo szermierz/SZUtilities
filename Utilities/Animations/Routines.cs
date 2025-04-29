@@ -2,6 +2,7 @@
 
 using UnityEngine;
 using Cysharp.Threading.Tasks;
+using System.Threading;
 
 namespace SZUtilities.Animations
 {
@@ -29,13 +30,24 @@ namespace SZUtilities.Animations
             return new AnimationBuilder(target, totalTime);
         }
 
-        public static UniTask Move(Transform target, Transform marker, float totalTime, Curve curve)
+        public static UniTask Move(Transform target, Transform marker, float totalTime, Curve curve, 
+            CancellationToken cancellationToken = default, ReuseableCancellationToken reuseableCancellationToken = default)
         {
             return Animate(target, totalTime)
                 .Position(marker.position, curve)
                 .Rotation(marker.rotation, curve)
                 .LocalScale(marker.localScale, curve)
-                .AwaitAnimation();
+                .AwaitAnimation(cancellationToken, reuseableCancellationToken);
+        }
+
+        public static DeferredUniTask MoveDeferred(Transform target, Transform marker, float totalTime, Curve curve,
+            CancellationToken cancellationToken = default, ReuseableCancellationToken reuseableCancellationToken = default)
+        {
+            return Animate(target, totalTime)
+                .Position(marker.position, curve)
+                .Rotation(marker.rotation, curve)
+                .LocalScale(marker.localScale, curve)
+                .DeferAnimation(cancellationToken, reuseableCancellationToken);
         }
     }
 }
