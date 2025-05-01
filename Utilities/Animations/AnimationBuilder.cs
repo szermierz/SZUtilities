@@ -11,8 +11,10 @@ namespace SZUtilities.Animations
     public struct AnimationBuilder
         : IDisposable
     {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
         private static bool s_buildingInProgress = false;
         private bool m_needsToReleaseBuilding;
+#endif
 
         private readonly Transform m_target;
         private readonly float m_totalTime;
@@ -25,10 +27,10 @@ namespace SZUtilities.Animations
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             if (s_buildingInProgress)
                 throw new Exception($"Memory leaks prevention: Did not finished previous building and started another one. Call {nameof(AwaitAnimation)} on previous builder");
-#endif
 
             s_buildingInProgress = true;
             m_needsToReleaseBuilding = true;
+#endif
 
             m_target = target;
             m_totalTime = totalTime;
@@ -65,11 +67,13 @@ namespace SZUtilities.Animations
 
         public async UniTask AwaitAnimation(CancellationToken cancellationToken, ReuseableCancellationToken reuseableCancellationToken)
         {
-            if(m_needsToReleaseBuilding)
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            if (m_needsToReleaseBuilding)
             {
                 s_buildingInProgress = false;
                 m_needsToReleaseBuilding = false;
             }
+#endif
 
             try
             {
@@ -97,9 +101,11 @@ namespace SZUtilities.Animations
 
         public void Dispose()
         {
-            if(m_needsToReleaseBuilding)
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            if (m_needsToReleaseBuilding)
                 s_buildingInProgress = false;
             m_needsToReleaseBuilding = false;
+#endif
             m_tracksGroup?.Dispose();
             m_tracksGroup = null;
             m_tracks = null;
@@ -124,11 +130,13 @@ namespace SZUtilities.Animations
             = (builder, cancelToken, reuseToken) => builder.AwaitAnimation(cancelToken, reuseToken);
         public DeferredUniTask DeferAnimation(CancellationToken cancellationToken, ReuseableCancellationToken reuseableCancellationToken)
         {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
             if (m_needsToReleaseBuilding)
             {
                 s_buildingInProgress = false;
                 m_needsToReleaseBuilding = false;
             }
+#endif
 
             return DeferredUniTask.Create(s_staticAwaitAnimation, this, cancellationToken, reuseableCancellationToken);
         }

@@ -392,7 +392,7 @@ namespace SZUtilities.Animations
                     foreach (var task in m_tasks)
                         RunTask(task).Forget();
 
-                    while (m_toRun >= 0)
+                    while (m_toRun > 0)
                         await UniTask.Yield();
                 }
                 finally
