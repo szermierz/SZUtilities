@@ -83,14 +83,14 @@ namespace SZUtilities.Extensions
             return result;
         }
 
-        public static void RemoveUnorderedAt<T>(this List<T> list, int index)
+        public static void RemoveUnorderedAt<T>(this List<T> list, System.Index index)
         {
             var lastIndex = list.Count - 1;
             list[index] = list[lastIndex];
             list.RemoveAt(lastIndex);
         }
 
-        public static T PopUnorderedAt<T>(this List<T> list, int index)
+        public static T PopUnorderedAt<T>(this List<T> list, System.Index index)
         {
             var result = list[index];
             list.RemoveUnorderedAt(index);
