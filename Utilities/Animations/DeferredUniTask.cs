@@ -9,6 +9,8 @@ namespace SZUtilities.Animations
     public struct DeferredUniTask
         : IDisposable
     {
+        public static explicit operator UniTask(DeferredUniTask deferredUniTask) => deferredUniTask.Invoke();
+
         private UniTaskCallerBase m_caller;
         private DisposablesGroup m_disposables;
 

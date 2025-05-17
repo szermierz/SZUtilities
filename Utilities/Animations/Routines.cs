@@ -15,7 +15,7 @@ namespace SZUtilities.Animations
         public static Curve RisingSquare => (v) => v * v;
         public static Curve DoubleSquare => (v) => Square(Square(v));
         public static Curve DoubleRisingSquare => (v) => RisingSquare(RisingSquare(v));
-        public static Curve Parabolic => (v) => 4.0f * v * (1.0f - v);
+        public static Curve From0Through1To0Parabolic => (v) => 4.0f * v * (1.0f - v);
 
         public static Curve BounceCurve => (v) =>
         {

@@ -107,7 +107,7 @@ namespace SZUtilities.Animations
         {
             base.SetProgress(progress, cancellationToken, reuseableCancellationToken);
 
-            var parabolicOffset = m_parabolicOffset * Routines.Parabolic(progress);
+            var parabolicOffset = m_parabolicOffset * Routines.From0Through1To0Parabolic(progress);
             m_target.position += parabolicOffset;
         }
     }
