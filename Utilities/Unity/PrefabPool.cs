@@ -27,15 +27,15 @@ namespace SZUtilities
 
         private static readonly List<SpawnHandle> s_freeHandles = new();
 
-        public IDisposable Rent<ComponentType>(ComponentType prefab, out ComponentType result)
+        public IDisposable Rent<ComponentType>(ComponentType prefab, out ComponentType result, Transform parent = null)
             where ComponentType : Component
         {
-            var handle = Rent(prefab.gameObject, out var spawn);
+            var handle = Rent(prefab.gameObject, out var spawn, parent);
             result = spawn.GetComponent<ComponentType>();
             return handle;
         }
 
-        public IDisposable Rent(GameObject prefab, out GameObject result)
+        public IDisposable Rent(GameObject prefab, out GameObject result, Transform parent = null)
         {
             if(!m_pools.ContainsKey(prefab))
                 m_pools.Add(prefab, new());
@@ -52,6 +52,9 @@ namespace SZUtilities
             var handle = s_freeHandles.PopUnorderedAt(^1);
 
             handle.Setup(this, pool, result);
+
+            if (parent)
+                result.transform.SetParent(parent);
 
             return handle;
         }
