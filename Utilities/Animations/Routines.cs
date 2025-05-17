@@ -30,23 +30,35 @@ namespace SZUtilities.Animations
             return new AnimationBuilder(target, totalTime);
         }
 
-        public static UniTask Move(Transform target, Transform marker, float totalTime, Curve curve, 
+        public static UniTask Move(Transform target, Transform marker, float totalTime, Curve curve,
             CancellationToken cancellationToken = default, ReuseableCancellationToken reuseableCancellationToken = default)
         {
-            return Animate(target, totalTime)
-                .Position(marker.position, curve)
-                .Rotation(marker.rotation, curve)
-                .LocalScale(marker.localScale, curve)
-                .AwaitAnimation(cancellationToken, reuseableCancellationToken);
+            return Move(target, marker.position, marker.rotation, marker.localScale, totalTime, curve, cancellationToken, reuseableCancellationToken);
         }
 
         public static DeferredUniTask MoveDeferred(Transform target, Transform marker, float totalTime, Curve curve,
             CancellationToken cancellationToken = default, ReuseableCancellationToken reuseableCancellationToken = default)
         {
+            return MoveDeferred(target, marker.position, marker.rotation, marker.localScale, totalTime, curve, cancellationToken, reuseableCancellationToken);
+        }
+
+        public static UniTask Move(Transform target, Vector3 position, Quaternion rotation, Vector3 localScale, float totalTime, Curve curve,
+            CancellationToken cancellationToken = default, ReuseableCancellationToken reuseableCancellationToken = default)
+        {
             return Animate(target, totalTime)
-                .Position(marker.position, curve)
-                .Rotation(marker.rotation, curve)
-                .LocalScale(marker.localScale, curve)
+                .Position(position, curve)
+                .Rotation(rotation, curve)
+                .LocalScale(localScale, curve)
+                .AwaitAnimation(cancellationToken, reuseableCancellationToken);
+        }
+
+        public static DeferredUniTask MoveDeferred(Transform target, Vector3 position, Quaternion rotation, Vector3 localScale, float totalTime, Curve curve,
+            CancellationToken cancellationToken = default, ReuseableCancellationToken reuseableCancellationToken = default)
+        {
+            return Animate(target, totalTime)
+                .Position(position, curve)
+                .Rotation(rotation, curve)
+                .LocalScale(localScale, curve)
                 .DeferAnimation(cancellationToken, reuseableCancellationToken);
         }
     }
