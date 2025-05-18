@@ -77,6 +77,10 @@ namespace SZUtilities.Animations
 
             try
             {
+                if (cancellationToken.IsCancellationRequested
+                    || reuseableCancellationToken.IsCancellationRequested)
+                    return;
+
                 for (var time = 0.0f; time < m_totalTime; time += Time.deltaTime)
                 {
                     var progress = Mathf.Clamp01(time / m_totalTime);
