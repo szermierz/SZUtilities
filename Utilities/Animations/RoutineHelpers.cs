@@ -143,6 +143,24 @@ namespace SZUtilities.Animations
         }
 
         #endregion
+
+        #region CancelTokens
+
+        public static async UniTask WaitForSeconds(float delay, ReuseableCancellationToken cancelToken = default)
+        {
+            if (cancelToken.IsCancellationRequested)
+                return;
+
+            for (var t = 0.0f; t < delay; t += UnityEngine.Time.deltaTime)
+            {
+                await UniTask.Yield();
+
+                if (cancelToken.IsCancellationRequested)
+                    return;
+            }
+        }
+
+        #endregion
     }
 }
 
