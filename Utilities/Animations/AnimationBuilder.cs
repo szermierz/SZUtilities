@@ -159,7 +159,7 @@ namespace SZUtilities.Animations
 
         public readonly AnimationBuilder Position(Vector3 to, Routines.Curve curve)
         {
-            return Position(m_target.localPosition, to, curve);
+            return Position(m_target.position, to, curve);
         }
 
         public readonly AnimationBuilder Position(Vector3 from, Vector3 to, Routines.Curve curve)

@@ -382,7 +382,15 @@ namespace SZUtilities.Animations
 
             private async UniTaskVoid RunTask(DeferredUniTask task)
             {
-                await task.Invoke();
+                try
+                {
+                    await task.Invoke();
+                }
+                catch(Exception e)
+                {
+                    UnityEngine.Debug.LogException(e);
+                }
+
                 --m_toRun;
             }
 

@@ -12,7 +12,7 @@ namespace SZUtilities.Animations
         private class ParallerRoutineRun
         {
             private readonly List<UniTask> m_tasks = new();
-            private int m_toRun;
+            private int m_toRun; 
 
             public void Clear()
             {
@@ -26,7 +26,15 @@ namespace SZUtilities.Animations
 
             private async UniTaskVoid RunTask(UniTask task)
             {
-                await task;
+                try
+                {
+                    await task;
+                }
+                catch(System.Exception e)
+                {
+                    UnityEngine.Debug.LogException(e);
+                }
+
                 --m_toRun;
             }
 
