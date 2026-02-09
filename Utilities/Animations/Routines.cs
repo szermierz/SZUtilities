@@ -52,9 +52,9 @@ namespace SZUtilities
                     return false;
 
                 var progress = Mathf.Min(1.0f, time / TimeTotal);
-                progress = Mathf.Clamp01(Curve(progress));
+                var progressValue = Mathf.Clamp01(Curve(progress));
 
-                SetProgress(progress);
+                SetProgress(progressValue);
 
                 if (1.0f == progress)
                     Completed = true;
