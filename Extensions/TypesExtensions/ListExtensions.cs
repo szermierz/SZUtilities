@@ -129,5 +129,26 @@ namespace SZUtilities.Extensions
             for(var i = 0; i < count; ++i)
                 list.Add(value);
         }
+
+#if UNITY_2017_1_OR_NEWER
+
+        public static int PickRandomIndex<T>(this IReadOnlyList<T> list)
+        {
+            return UnityEngine.Random.Range(0, list.Count);
+        }
+
+        public static T PickRandom<T>(this IReadOnlyList<T> list)
+        {
+            return list[PickRandomIndex(list)];
+        }
+
+        public static T PopRandomUnordered<T>(this List<T> list)
+        {
+            var index = PickRandomIndex(list);
+            return PopUnorderedAt(list, index);
+        }
+
+#endif
+
     }
 }
