@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace SZUtilities.Extensions
 {
@@ -100,6 +101,48 @@ namespace SZUtilities.Extensions
         public static T PopUnordered<T>(this List<T> list)
         {
             return list.PopUnorderedAt(list.Count - 1);
+        }
+
+        public static void UnorderedDistinct<T>(this List<T> list)
+        {
+            if (list == null || list.Count <= 1)
+                return;
+
+            if (typeof(IComparable<T>).IsAssignableFrom(typeof(T)))
+                list.Sort();
+            else
+                list.Sort(ComparerCache<T>.Instance);
+
+            var writeIndex = 1;
+            for (var readIndex = 1; readIndex < list.Count; readIndex++)
+            {
+                if (!EqualityComparer<T>.Default.Equals(list[readIndex], list[writeIndex - 1]))
+                    list[writeIndex++] = list[readIndex];
+            }
+
+            if (writeIndex < list.Count)
+                list.RemoveRange(writeIndex, list.Count - writeIndex);
+        }
+
+        private static class ComparerCache<T>
+        {
+            public static readonly IComparer<T> Instance = new EqualityBasedComparer<T>();
+        }
+
+        private class EqualityBasedComparer<T> : IComparer<T>
+        {
+            private static readonly EqualityComparer<T> Eq = EqualityComparer<T>.Default;
+
+            public int Compare(T x, T y)
+            {
+                if (Eq.Equals(x, y))
+                    return 0;
+
+                int hx = x?.GetHashCode() ?? 0;
+                int hy = y?.GetHashCode() ?? 0;
+
+                return hx.CompareTo(hy);
+            }
         }
 
         public static void Shuffle<T>(this List<T> list)
