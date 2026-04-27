@@ -38,13 +38,16 @@ namespace SZUtilities
 
         public void Dispose()
         {
-            foreach (var disposable in m_list)
-                disposable.Dispose();
+            if(null != m_list)
+            {
+                foreach (var disposable in m_list)
+                    disposable.Dispose();
+            }
 
-            m_list.Clear();
-            m_listHandle.Dispose();
-
+            m_list?.Clear();
             m_list = null;
+
+            m_listHandle?.Dispose();
             m_listHandle = null;
 
             s_freeGroups.Add(this);
