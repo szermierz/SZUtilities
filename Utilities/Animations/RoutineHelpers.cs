@@ -22,11 +22,16 @@ namespace SZUtilities
             }
 
             using var _ = ListRenting.Rent(out List<IEnumerator> stack);
+            var disposed = false;
+
             try
             {
                 stack.Add(logic);
                 while (stack.Count > 0)
                 {
+                    if (disposed)
+                        yield break;
+
                     var last = stack[^1];
                     if(last.MoveNext())
                     {
@@ -47,12 +52,15 @@ namespace SZUtilities
                         if (last is IDisposable disposable)
                             disposable.Dispose();
 
-                        stack.RemoveAt(stack.Count - 1);
+                        if (!disposed)
+                            stack.RemoveAt(stack.Count - 1);
                     }
                 }
             }
             finally
             {
+                disposed = true;
+
                 for (var i = stack.Count - 1; i >= 0; --i)
                 {
                     if (stack[i] is IDisposable disposable)
