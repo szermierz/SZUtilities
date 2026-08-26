@@ -117,6 +117,52 @@ namespace SZUtilities
         }
 
         #endregion
+
+        #region Editor utilities
+
+#if UNITY_EDITOR
+        [UnityEditor.InitializeOnLoad]
+#endif
+        public static class MonoBehaviourExUtilities
+        {
+#if UNITY_EDITOR
+            [UnityEditor.MenuItem("Tools/SZUtilities/Verify MonoBehavioursEx")]
+            private static void _VerifyMonoBehavioursEx()
+            {
+                // Prefabs
+                var allPrefabs = UnityEditor.AssetDatabase.FindAssets("t: prefab")
+                    .Select(guid => UnityEditor.AssetDatabase.GUIDToAssetPath(guid))
+                    .Select(path => UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>(path))
+                    .Where(prefab => prefab)
+                    .ToArray();
+
+                var sum = 0;
+                foreach (var prefab in allPrefabs)
+                    sum += _VerifyGameObject(prefab);
+
+                var debug = new DebugEx(nameof(MonoBehaviourEx));
+                debug.Log($"Verified {sum} game objects total");
+
+                debug.LogWarning("ToDo - verify all scenes");
+            }
+
+            private static int _VerifyGameObject(GameObject gameObject)
+            {
+                var monoBehaviorsEx = gameObject.GetComponents<MonoBehaviourEx>();
+                foreach (var monoBehaviorEx in monoBehaviorsEx)
+                    monoBehaviorEx.Verify();
+
+                var sum = monoBehaviorsEx.Length;
+
+                for (var i = 0; i < gameObject.transform.childCount; ++i)
+                    sum += _VerifyGameObject(gameObject.transform.GetChild(i).gameObject);
+
+                return sum;
+            }
+#endif
+        }
+
+        #endregion
     }
 
     public interface IValidable
